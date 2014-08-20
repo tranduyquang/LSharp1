@@ -71,7 +71,9 @@ namespace Tonghop
             Config.AddSubMenu(new Menu("UseItems", "UseItems"));
             Config.SubMenu("UseItems").AddItem(new MenuItem("UseItems", "Use Items")).SetValue(true);
             Config.SubMenu("UseItems").AddItem(new MenuItem("ActiveCombo", "UseItems").SetValue(new KeyBind(32, KeyBindType.Press)));
-     
+            Config.AddSubMenu(new Menu("AutoPotion", "AutoPotion"));
+            Config.SubMenu("AutoPotion").AddItem(new MenuItem("HealthPercent", "HP Trigger Percent").SetValue(new Slider(50, 100, 0)));
+            Config.SubMenu("AutoPotion").AddItem(new MenuItem("ManaPercent", "MP Trigger Percent").SetValue(new Slider(50, 100, 0)));  
             Config.AddToMainMenu();
 
             Game.OnGameUpdate += OnGameUpdate;
@@ -82,10 +84,21 @@ namespace Tonghop
         private static void OnGameUpdate(EventArgs args) 
         {
            tuong = ObjectManager.Player;
+           //auto potion
+            if (GetPlayerHealthPercent() < Config.Item("HealthPercent").GetValue<Slider>().Value)
+                if (!ObjectManager.Player.Buffs.Any(buff => buff.Name == "RegenerationPotion" || buff.Name == "ItemCrystalFlask" || buff.Name == "ItemMiniRegenPotion"))
+                    GetHealthPotionSlot().UseItem();
+            
+            if (GetPlayerManaPercent() < Config.Item("ManaPercent").GetValue<Slider>().Value)
+                if (!ObjectManager.Player.Buffs.Any(buff => buff.Name == "ItemCrystalFlask" || buff.Name == "FlaskOfCrystalWater"))
+                    GetManaPotionSlot().UseItem();
+            
+            //use item
             if (Config.Item("ActiveCombo").GetValue<KeyBind>().Active) 
             {
                 Combo();
             }
+            //ignite
             if (Config.Item("UseIgnite").GetValue<bool>()) {
                 KillSteal();
             }
@@ -129,6 +142,25 @@ namespace Tonghop
                     tuong.SummonerSpellbook.CastSpell(IgniteSlot, target);
                 }
             }
+        }
+        private static float GetPlayerHealthPercent()
+        {
+            return ObjectManager.Player.Health * 100 / ObjectManager.Player.MaxHealth;
+        }
+        
+        private static InventorySlot GetHealthPotionSlot()
+        {
+            return ObjectManager.Player.InventoryItems.First(item => (item.Id == (ItemId)2003 && item.Stacks >= 1 )|| (item.Id == (ItemId)2009 && item.Stacks >= 1) || (item.Id == (ItemId)2010 && item.Stacks >= 1) || (item.Id == (ItemId)2041) && item.Charges >=1 );
+        }
+
+        private static float GetPlayerManaPercent()
+        {
+            return ObjectManager.Player.Mana * 100 / ObjectManager.Player.MaxMana;
+        }
+
+        private static InventorySlot GetManaPotionSlot()
+        {
+            return ObjectManager.Player.InventoryItems.First(item => (item.Id == (ItemId)2004 && item.Stacks >= 1) || (item.Id == (ItemId)2041 && item.Charges >=1 ));
         }
 
     }
