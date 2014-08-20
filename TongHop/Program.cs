@@ -18,6 +18,8 @@ namespace Tonghop
     {
 
         private static Menu Config;
+        
+        public static TargetSelector TS;
 
         private static Items.Item riumx;
 
@@ -48,6 +50,9 @@ namespace Tonghop
         private static void OnGameLoad(EventArgs args) 
         {
             tuong = ObjectManager.Player;
+            
+            TS = new TargetSelector(1000, TargetSelector.TargetingMode.AutoPriority);
+            
             IgniteSlot = tuong.GetSpellSlot("SummonerDot");
 
             riumx = new Items.Item(3074, 175f);
@@ -62,8 +67,9 @@ namespace Tonghop
 
             Config = new Menu("TongHop", "TongHop", true);
 
-            var targetSelectorMenu = new Menu("Target Selector", "Target Selector");
-            SimpleTs.AddToMenu(targetSelectorMenu);
+            Config.AddSubMenu(new Menu("Target Selector", "TargetSelector"));
+            Config.SubMenu("TargetSelector").AddItem(new MenuItem("TargetingMode", "Mode")).SetValue(new StringList(new[] { "AutoPriority", "Closest", "LessAttack", "LessCast", "LowHP", "MostAD", "MostAP", "NearMouse" }, 1));
+            Config.SubMenu("TargetSelector").AddItem(new MenuItem("TargetingRange", "Range")).SetValue(new Slider(750, 2000, 100));
 
             //Combo
             Config.AddSubMenu(new Menu("Killable", "Ks"));
@@ -104,6 +110,41 @@ namespace Tonghop
             }
         }
 
+        private static void InternalSetTargetingMode()
+        {
+            float TSRange = Config.Item("TargetingRange").GetValue<Slider>().Value;
+            TS.SetRange(TSRange);
+            var mode = Config.Item("TargetingMode").GetValue<StringList>().SelectedIndex;
+
+            switch (mode)
+            {
+                case 0:
+                    TS.SetTargetingMode(TargetSelector.TargetingMode.AutoPriority);
+
+                    break;
+                case 1:
+                    TS.SetTargetingMode(TargetSelector.TargetingMode.Closest);
+                    break;
+                case 2:
+                    TS.SetTargetingMode(TargetSelector.TargetingMode.LessAttack);
+                    break;
+                case 3:
+                    TS.SetTargetingMode(TargetSelector.TargetingMode.LessCast);
+                    break;
+                case 4:
+                    TS.SetTargetingMode(TargetSelector.TargetingMode.LowHP);
+                    break;
+                case 5:
+                    TS.SetTargetingMode(TargetSelector.TargetingMode.MostAD);
+                    break;
+                case 6:
+                    TS.SetTargetingMode(TargetSelector.TargetingMode.MostAP);
+                    break;
+                case 7:
+                    TS.SetTargetingMode(TargetSelector.TargetingMode.NearMouse);
+                    break;
+            }
+        }
         private static void Combo() 
         {
             var target = SimpleTs.GetTarget(500, SimpleTs.DamageType.Physical);
@@ -133,15 +174,24 @@ namespace Tonghop
             }
         }
         private static void Killable() {
-            var target = SimpleTs.GetTarget(650, SimpleTs.DamageType.Physical);
-            var igniteDmg = DamageLib.getDmg(target, DamageLib.SpellType.IGNITE);
-            if (target != null && tuong.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
+            foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
             {
-                if (igniteDmg > target.Health)
+                if (hero != null)
                 {
-                    tuong.SummonerSpellbook.CastSpell(IgniteSlot, target);
+                    if ((hero.IsEnemy) && (hero.IsValidTarget(GetSummoner("SummonerDot").SData.CastRange[0])))
+                    {
+                        if (hero.Health < DamageLib.getDmg(hero, DamageLib.SpellType.IGNITE))
+                        {
+                            tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerDot").Slot, hero);
+                        }
+                    }
                 }
             }
+        }
+        private static SpellDataInst GetSummoner(string p)
+        {
+            var spells = tuong.SummonerSpellbook.Spells;
+            return spells.FirstOrDefault(spell => spell.Name == p);
         }
         private static float GetPlayerHealthPercent()
         {
