@@ -66,7 +66,7 @@ namespace Tonghop
             SimpleTs.AddToMenu(targetSelectorMenu);
 
             //Combo
-            Config.AddSubMenu(new Menu("KillSteal", "Ks"));
+            Config.AddSubMenu(new Menu("Killable", "Ks"));
             Config.SubMenu("Ks").AddItem(new MenuItem("UseIgnite", "Use Ignite")).SetValue(true);
             Config.AddSubMenu(new Menu("UseItems", "UseItems"));
             Config.SubMenu("UseItems").AddItem(new MenuItem("UseItems", "Use Items")).SetValue(true);
@@ -100,7 +100,7 @@ namespace Tonghop
             }
             //ignite
             if (Config.Item("UseIgnite").GetValue<bool>()) {
-                KillSteal();
+                Killable();
             }
         }
 
@@ -132,7 +132,7 @@ namespace Tonghop
                 }
             }
         }
-        private static void KillSteal() {
+        private static void Killable() {
             var target = SimpleTs.GetTarget(650, SimpleTs.DamageType.Physical);
             var igniteDmg = DamageLib.getDmg(target, DamageLib.SpellType.IGNITE);
             if (target != null && tuong.SummonerSpellbook.CanUseSpell(IgniteSlot) == SpellState.Ready)
