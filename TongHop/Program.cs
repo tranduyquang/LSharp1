@@ -118,7 +118,7 @@ namespace Tonghop
             }
             //heal 
             if (Config.Item("UseHeal").GetValue<bool>()) {
-                Heal();
+                tuong.Spellbook.CastSpell(HealSlot);
             }
         }
 
