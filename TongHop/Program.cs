@@ -41,7 +41,6 @@ namespace Tonghop
         
         private static Obj_AI_Hero tuong;
         private static SpellSlot IgniteSlot;
-        private static SpellSlot HealSlot;
 
         static void Main(string[] args)
         {
@@ -55,7 +54,6 @@ namespace Tonghop
             TS = new TargetSelector(1000, TargetSelector.TargetingMode.AutoPriority);
             
             IgniteSlot = tuong.GetSpellSlot("SummonerDot");
-            HealSlot   = tuong.GetSpellSlot("SummonerHeal");
 
             riumx = new Items.Item(3074, 175f);
             tiamat = new Items.Item(3077, 175f);
@@ -115,10 +113,6 @@ namespace Tonghop
             //Exhaust
             if (Config.Item("UseExhaust").GetValue<bool>()) {
                 Exhaust();
-            }
-            //heal 
-            if (Config.Item("UseHeal").GetValue<bool>()) {
-                tuong.Spellbook.CastSpell(HealSlot);
             }
         }
 
@@ -218,26 +212,7 @@ namespace Tonghop
             }
             
         }
-        private static void Heal() {
-            foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
-            {
-                if (hero != null)
-                {
-                    if ((hero.IsAlly) && (hero.IsValidTarget(GetSummoner("SummonerHeal").SData.CastRange[0])))
-                    {
-                        if (hero.Health < hero.MaxHealth / 2)
-                        {
-                            tuong.Spellbook.CastSpell(HealSlot);
-                        }
-                    }
-                }
-            }
-        if (tuong.Health < tuong.MaxHealth / 2 )
-        {
-            tuong.SummonerSpellbook.CastSpell(HealSlot);
-        }
-            
-        }
+        
         private static SpellDataInst GetSummoner(string p)
         {
             var spells = tuong.SummonerSpellbook.Spells;
