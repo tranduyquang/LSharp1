@@ -40,6 +40,7 @@ namespace Tonghop
         private static Items.Item tiamat;
         
         private static Obj_AI_Hero tuong;
+        
         private static SpellSlot IgniteSlot;
 
         static void Main(string[] args)
@@ -187,7 +188,7 @@ namespace Tonghop
                     {
                         if (hero.Health < DamageLib.getDmg(hero, DamageLib.SpellType.IGNITE))
                         {
-                            tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerDot").Slot, hero);
+                            ObjectManager.Player.SummonerSpellbook.CastSpell(GetSummoner("SummonerDot").Slot, hero);
                         }
                     }
                 }
@@ -203,7 +204,7 @@ namespace Tonghop
                     {
                         if (hero.Health < hero.MaxHealth / 3)
                         {
-                            tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerExhaust").Slot, hero);
+                            ObjectManager.Player.SummonerSpellbook.CastSpell(GetSummoner("SummonerExhaust").Slot, hero);
                         }
                     }
                 }
