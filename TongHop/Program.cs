@@ -203,7 +203,7 @@ namespace Tonghop
                     {
                         if (hero.Health < hero.Health / 3)
                         {
-                            ObjectManager.Player.SummonerSpellbook.CastSpell(GetSummoner("SummonerExhaust").Slot, hero);
+                            tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerExhaust").Slot, hero);
                         }
                     }
                 }
