@@ -201,7 +201,7 @@ namespace Tonghop
                 {
                     if ((hero.IsEnemy) && (hero.IsValidTarget(GetSummoner("SummonerExhaust").SData.CastRange[0])))
                     {
-                        if (hero.Health < hero.Health / 3)
+                        if (hero.Health < hero.MaxHealth / 3)
                         {
                             tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerExhaust").Slot, hero);
                         }
