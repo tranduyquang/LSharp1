@@ -75,7 +75,6 @@ namespace Tonghop
             Config.AddSubMenu(new Menu("Smart", "Ks"));
             Config.SubMenu("Ks").AddItem(new MenuItem("UseIgnite", "Use Ignite")).SetValue(true);
             Config.SubMenu("Ks").AddItem(new MenuItem("UseExhaust", "Use Exhaust")).SetValue(true);
-            Config.SubMenu("Ks").AddItem(new MenuItem("UseHeal", "Use Heal")).SetValue(true);
             Config.AddSubMenu(new Menu("UseItems", "UseItems"));
             Config.SubMenu("UseItems").AddItem(new MenuItem("UseItems", "Use Items")).SetValue(true);
             Config.SubMenu("UseItems").AddItem(new MenuItem("ActiveCombo", "UseItems").SetValue(new KeyBind(32, KeyBindType.Press)));
