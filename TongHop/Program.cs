@@ -72,8 +72,9 @@ namespace Tonghop
             Config.SubMenu("TargetSelector").AddItem(new MenuItem("TargetingRange", "Range")).SetValue(new Slider(750, 2000, 100));
 
             //Combo
-            Config.AddSubMenu(new Menu("Killable", "Ks"));
+            Config.AddSubMenu(new Menu("Smart", "Ks"));
             Config.SubMenu("Ks").AddItem(new MenuItem("UseIgnite", "Use Ignite")).SetValue(true);
+            Config.SubMenu("Ks").AddItem(new MenuItem("UseExhaust", "Use Exhaust")).SetValue(true);
             Config.AddSubMenu(new Menu("UseItems", "UseItems"));
             Config.SubMenu("UseItems").AddItem(new MenuItem("UseItems", "Use Items")).SetValue(true);
             Config.SubMenu("UseItems").AddItem(new MenuItem("ActiveCombo", "UseItems").SetValue(new KeyBind(32, KeyBindType.Press)));
@@ -106,7 +107,11 @@ namespace Tonghop
             }
             //ignite
             if (Config.Item("UseIgnite").GetValue<bool>()) {
-                Killable();
+                Smart();
+            }
+            //Exhaust
+            if (Config.Item("UseExhaust").GetValue<bool>()) {
+                Exhaust();
             }
         }
 
@@ -173,7 +178,7 @@ namespace Tonghop
                 }
             }
         }
-        private static void Killable() {
+        private static void Smart() {
             foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
             {
                 if (hero != null)
@@ -187,6 +192,24 @@ namespace Tonghop
                     }
                 }
             }
+            
+        }
+        private static void Exhaust() {
+            foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                if (hero != null)
+                {
+                    if ((hero.IsEnemy) && (hero.IsValidTarget(GetSummoner("SummonerExhaust").SData.CastRange[0])))
+                    {
+                        if (hero.Health < hero.Health / 3)
+                        {
+                            ObjectManager.Player.SummonerSpellbook.CastSpell(GetSummoner("SummonerExhaust").Slot, hero);
+                        }
+                    }
+                }
+
+            }
+            
         }
         private static SpellDataInst GetSummoner(string p)
         {
