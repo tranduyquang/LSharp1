@@ -232,7 +232,7 @@ namespace Tonghop
             }
         if (tuong.Health < tuong.MaxHealth / 2 )
         {
-            tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerHeal").Slot, hero);
+            tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerHeal").Slot, tuong);
         }
             
         }
