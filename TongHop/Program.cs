@@ -116,7 +116,7 @@ namespace Tonghop
             }
             //heal 
             if (Config.Item("UseHeal").GetValue<bool>()) {
-                Exhaust();
+                Heal();
             }
         }
 
