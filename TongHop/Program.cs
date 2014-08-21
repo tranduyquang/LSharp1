@@ -75,6 +75,7 @@ namespace Tonghop
             Config.AddSubMenu(new Menu("Smart", "Ks"));
             Config.SubMenu("Ks").AddItem(new MenuItem("UseIgnite", "Use Ignite")).SetValue(true);
             Config.SubMenu("Ks").AddItem(new MenuItem("UseExhaust", "Use Exhaust")).SetValue(true);
+            Config.SubMenu("Ks").AddItem(new MenuItem("UseHeal", "Use Heal")).SetValue(true);
             Config.AddSubMenu(new Menu("UseItems", "UseItems"));
             Config.SubMenu("UseItems").AddItem(new MenuItem("UseItems", "Use Items")).SetValue(true);
             Config.SubMenu("UseItems").AddItem(new MenuItem("ActiveCombo", "UseItems").SetValue(new KeyBind(32, KeyBindType.Press)));
@@ -111,6 +112,10 @@ namespace Tonghop
             }
             //Exhaust
             if (Config.Item("UseExhaust").GetValue<bool>()) {
+                Exhaust();
+            }
+            //heal 
+            if (Config.Item("UseHeal").GetValue<bool>()) {
                 Exhaust();
             }
         }
@@ -208,6 +213,26 @@ namespace Tonghop
                     }
                 }
 
+            }
+            
+        }
+        private static void Heal() {
+            foreach (Obj_AI_Hero hero in ObjectManager.Get<Obj_AI_Hero>())
+            {
+                if (hero != null)
+                {
+                    if ((hero.IsAlly) && (hero.IsValidTarget(GetSummoner("SummonerHeal").SData.CastRange[0])))
+                    {
+                        if (hero.Health < hero.MaxHealth / 2)
+                        {
+                            tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerHeal").Slot, hero);
+                        }
+                    }
+                }
+                if (tuong.Health < tuong.MaxHealth / 2 )
+                {
+                    tuong.SummonerSpellbook.CastSpell(GetSummoner("SummonerHeal").Slot, hero);
+                }
             }
             
         }
